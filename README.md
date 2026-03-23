@@ -2,6 +2,8 @@
 
 英文を入力すると、ネイティブのアメリカ英語カジュアル発音を解析し、単語ごとにIPA発音記号・カタカナ読み・ストレス・連結音声現象を付与してHTMLで表示する [Claude Skills](https://support.anthropic.com/en/articles/claude-ai-skills) です。
 
+<img width="956" height="984" alt="Image" src="https://github.com/user-attachments/assets/e1cd73ce-a303-4b2a-9f96-205e4005a3a3" />
+
 ## Claude Skills とは？
 
 [Claude](https://claude.ai) は Anthropic が開発した AI アシスタントです。**Claude Skills** は、Claudeに特定のタスクのやり方を教える拡張機能のようなもの。`SKILL.md` というファイルに手順やルールを書いておくと、Claudeが会話の中で自動的にそのスキルを使ってくれます。
