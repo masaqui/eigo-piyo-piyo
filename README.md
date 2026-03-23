@@ -2,7 +2,7 @@
 
 英文を入力すると、ネイティブのアメリカ英語カジュアル発音を解析し、単語ごとにIPA発音記号・カタカナ読み・ストレス・連結音声現象を付与してHTMLで表示する [Claude Skills](https://support.anthropic.com/en/articles/claude-ai-skills) です。
 
-<img width="956" height="984" alt="Image" src="https://github.com/user-attachments/assets/e1cd73ce-a303-4b2a-9f96-205e4005a3a3" />
+<img width="661" height="1174" alt="Image" src="https://github.com/user-attachments/assets/f31e8741-a5a5-4690-92b6-992ca45ce18d" />
 
 ## Claude Skills とは？
 
