@@ -2,6 +2,14 @@
 
 英文を入力すると、ネイティブのアメリカ英語カジュアル発音を解析し、単語ごとにIPA発音記号・カタカナ読み・ストレス・連結音声現象を付与してHTMLで表示する [Claude Skills](https://support.anthropic.com/en/articles/claude-ai-skills) です。
 
+## Claude Skills とは？
+
+[Claude](https://claude.ai) は Anthropic が開発した AI アシスタントです。**Claude Skills** は、Claudeに特定のタスクのやり方を教える拡張機能のようなもの。`SKILL.md` というファイルに手順やルールを書いておくと、Claudeが会話の中で自動的にそのスキルを使ってくれます。
+
+たとえば「この英文の発音を教えて」と聞くだけで、このEigoPiyoPiyoスキルが自動的に発動し、音声現象の解析からHTML生成まで一貫して行います。プラグインのような感覚で、誰でも自分のスキルを作って追加できます。
+
+詳しくは [Claude Skills 公式ドキュメント](https://support.claude.com/en/articles/claude-ai-skills) をご覧ください。
+
 ## 特徴
 
 - **ふりがな方式**: 英文の上にカタカナ読みを `<ruby>` タグで表示
@@ -22,21 +30,32 @@
 
 ## インストール
 
-### Claude.ai Skills として使う
+`SKILL.md` のフォーマットはオープンスタンダードで、Claude のどの製品でも共通です。
+
+### Claude.ai / Claudeアプリ（Mac・iOS・Android）
+
+Web版（claude.ai）とデスクトップ・モバイルアプリは同じアカウント・同じSkillsを共有しています。
 
 1. このリポジトリをZIPでダウンロード（または `SKILL.md` を単体でダウンロード）
-2. [Claude.ai](https://claude.ai) の設定 → Skills からアップロード
+2. 設定 → カスタマイズ → Skills → 「+」ボタン → 「Upload a skill」からアップロード
 
-### Claude Code で使う
+スキルは自動的に認識され、関連する質問をすると自動で発動します。
+
+### Claude Code（ターミナルCLI）
 
 ```bash
-# リポジトリをクローン
-git clone https://github.com/masaqui/eigo-piyo-piyo.git
+# プロジェクトのスキルディレクトリに配置（プロジェクト固有）
+git clone https://github.com/masaqui/eigo-piyo-piyo.git .claude/skills/eigo-piyo-piyo
 
-# Claude Code のスキルディレクトリに配置
-# 例: プロジェクトの .claude/skills/ 配下にコピー
-cp -r eigo-piyo-piyo /path/to/your-project/.claude/skills/
+# または個人のグローバルスキルとして配置（全プロジェクト共通）
+git clone https://github.com/masaqui/eigo-piyo-piyo.git ~/.claude/skills/eigo-piyo-piyo
 ```
+
+Claude Code ではスキルが自動検出されるほか、`/eigo-piyo-piyo` のようにスラッシュコマンドとしても呼び出せます。
+
+### Claude API
+
+Skills APIを使ってプログラムからアップロード・利用できます。詳しくは [Skills APIドキュメント](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) を参照してください。
 
 ## 使い方
 
