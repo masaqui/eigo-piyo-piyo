@@ -1,4 +1,4 @@
-# 🐣 EigoPiyoPiyo - 英語発音ガイドスキル
+# 🐣 EigoPiyoPiyo - 英語のリスニング&シャドーイングに効く! ネイティブ発音可視化ツール
 
 英文を入力すると、ネイティブのアメリカ英語カジュアル発音を解析し、単語ごとにIPA発音記号・カタカナ読み・ストレス・連結音声現象を付与してHTMLで表示する [Claude Skills](https://support.anthropic.com/en/articles/claude-ai-skills) です。
 
