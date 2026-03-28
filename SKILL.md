@@ -24,9 +24,15 @@ description: 英語発音ガイドスキル。英文を入力すると、ネイ�
 
 ### グループ（group）とは
 
-グループは、連結発音（connected speech）によって一緒に発音される1つ以上の単語のまとまり。
+グループは、連結発音（connected speech）や韻律的まとまり（prosodic chunking）によって一緒に発音される1つ以上の単語のまとまり。
 
 - **リンキング**で繋がる単語は1グループ（例: "eating outside" → 1グループ）
+- **アシミレーション**で融合する単語は1グループ（例: "did you" → 1グループ）
+- **リズムグルーピング**: 弱形の機能語（weak）が隣接し、間にストレス語がない場合は1グループにまとめる。音声現象（リンキング・アシミレーション等）がなくても、韻律的に一つの塊として発音されるためグループ化する。
+  例: "for you" → どちらも弱形機能語で間にストレスがない → 1グループ「ファヤ」
+  例: "to the" → どちらも弱形機能語 → 1グループ「トゥダ」
+  例: "in a" → 弱形機能語同士だが /n/+/ə/ でリンキングもする → 1グループ「イナ」（リンキングとしてマーク）
+  ⚠️ リズムグルーピングはあくまで**弱形同士**の結合。弱形＋ストレス語、ストレス語＋弱形は対象外（それぞれ独立グループ）。
 - 単独の単語はそれ自体が1グループ（例: "How" → 1グループ）
 
 ### original配列のルール
@@ -68,6 +74,12 @@ description: 英語発音ガイドスキル。英文を入力すると、ネイ�
   - 未開放（unreleased）で実質聞こえない音: "I'**d** like"→アイライク（/d/ は次の /l/ の前で未開放、舌は d の位置に行くが破裂せずそのまま l に移行するため実質聞こえない）, "woul**d**"（文末）→ウッ
   - 音の省略: "probably"→probly（音節ごと省略）
   - /n/+t+母音の t 脱落: "twen**t**y"→トゥウェンニー, "cen**t**er"→センナー, "win**t**er"→ウィンナー, "plen**t**y"→プレンニー。/nt/ クラスタ内の t がカジュアル発話で脱落し、/n/ が直接次の母音に繋がる。フラッピング（ラ行の音）ではないので注意。
+  - 同一調音点の子音連続（前の音が吸収されて脱落）: 同じ調音点（舌の位置）の子音が語をまたいで連続すると、前の子音が脱落して後ろの子音に吸収される。閉鎖音に限らず摩擦音でも起きる。
+    - /θ/+/ð/: "wi**th** this"→ウィディス（/θ/ が /ð/ に吸収）, "wi**th** that"→ウィダッ, "wi**th** the"→ウィダ
+    - /θ/+/θ/: "bo**th** things"→ボウスィングズ（前の /θ/ が脱落）
+    - /s/+/s/: "thi**s** Saturday"→ディサラデイ（/s/ が1つに）
+    - /z/+/z/: "chee**se** zone"→チーゾウン（/z/ が1つに）
+    この場合、前の語の該当子音文字に `char-reduction` を付ける。また、前後の語を1グループにまとめてカタカナで連結発音を反映する。
   ❌ リダクションしない（normalにする）例:
   - "good morning": /d/ は未開放だが音は存在する → リダクションではない（/d/+/m/ は閉鎖音+鼻音で、吸収パターンに該当しない）
   **判定基準: カジュアル発話でネイティブがほとんど聞き取れないレベルの音はすべてリダクションとしてマークする。** 閉鎖音+閉鎖音の連続、文末の t/d、silent letter、未開放の閉鎖音は積極的にマーク。/d/+/m/ や /d/+/n/ のような閉鎖音+鼻音は音が残るのでマークしない。迷ったらリダクションにする。
@@ -86,10 +98,42 @@ description: 英語発音ガイドスキル。英文を入力すると、ネイ�
 
 同じタイプが連続する文字はまとめる。スペースは `normal`。
 
+### フレーズ区切り（thought groups）
+
+文をリズムの塊（thought groups / prosodic phrases）に分割し、区切り位置に視覚的なマーカーを表示する。これにより、英語の自然なリズムとポーズの位置が一目でわかる。
+
+**判定ルール（優先度順）:**
+
+1. **句読点**: カンマ `,` セミコロン `;` の後は必ず区切る
+2. **接続詞の前**: and, but, or, so, because などの等位接続詞の前で区切る
+   - ただし短い列挙（"A and B" の2項目のみ）では区切らなくてもよい
+   - 3項目以上の列挙（"A and B and C"）は各項目の前で区切る
+3. **動詞句のまとまり**: 主語＋助動詞＋動詞は1フレーズにまとめる（"can I get" → 1塊）
+4. **名詞句のまとまり**: 修飾語＋名詞は1フレーズにまとめる（"two cheese burgers" → 1塊）
+5. **前置詞句の前**: for, with, in, at, on などの前置詞句の前で区切ることが多い（ただし短い前置詞句は前のフレーズに含めてもよい）
+6. **フィラー・呼びかけの後**: Well, Uh, You know, I mean, Let's see などの後で区切る
+
+**例:**
+- "Well, can I get two cheese burgers and one french fries and an iced tea, please."
+  → Well, / can I get / two cheese burgers / and one french fries / and an iced tea, please.
+- "Please wait for your meal with this number card."
+  → Please wait / for your meal / with this number card.
+
+⚠️ フレーズ区切りは厳密な正解があるものではなく、話速や話者によって変わる。自然に聞こえるまとまりを意識して判定する。迷ったら区切りを入れる（区切りすぎるより、区切らなさすぎる方が読みにくい）。
+
+**HTML表現**: フレーズの区切り位置に `<span class="phrase-break"></span>` を挿入する。rubyグループの**間**に置く。
+
 ### stress値
 
-- `stressed`: 文の中で主要な強調を持つ内容語（1文あたり1-3個）→ 太字・大きいカタカナ
-- `weak`: 機能語（冠詞、前置詞、助動詞、弱化代名詞）→ 小さいカタカナ
+- `stressed`: 文の中で強調される語 → 太字・大きいカタカナ。以下の2つの基準で判定する:
+  1. **内容語強勢**: 主要な内容語（名詞・動詞・形容詞・副詞）のうち、文の意味の中心となるもの
+  2. **焦点強勢（focus stress）**: 文脈上、話者が特に伝えたい情報。文法的には機能語や数詞でも、意味的に重要なら stressed にする。
+     - 数量: 注文・依頼で個数を正確に伝えたい場面（"**two** cheese burgers and **one** french fries"）
+     - 対比: 選択肢を比較する場面（"not **this** one, **that** one"）
+     - 訂正: 誤りを正す場面（"I said **Tuesday**, not **Thursday**"）
+     - 新情報: 会話に初めて導入される重要な情報
+  ⚠️ 入力テキストで `**太字**` マークされた語がある場合、その語を必ず stressed にする（ユーザーによる明示的な強調指定）。
+- `weak`: 機能語（冠詞、前置詞、助動詞、弱化代名詞）→ 小さいカタカナ。ただし焦点強勢に該当する場合は stressed に昇格する。
 - `normal`: その他
 
 ### 単語内アクセント（音節強勢）
@@ -156,6 +200,7 @@ HTML生成前に、以下の項目を1つずつ確認する。過去の実際の
 7. **/ð/ のカタカナがダ行か**: there, that, this, the, they, them, then, though などの /ð/ を「ゼア」「ザ」などザ行にしていないか？ 必ずダ行（デア、ダッ、ディス、ダ、デイ、ダム、デン、ドウ）で統一。
 8. **/nt/ クラスタの t**: twenty, center, winter, plenty などの /n/+t+母音 の t にリダクションマーク（`char-reduction`）が付いているか？ フラッピングマークではないことを確認。
 9. **th にフラッピングを付けていないか**: anything, nothing, weather, other などの th は /θ/ /ð/（摩擦音）であり、フラッピングの対象ではない。
+10. **同一調音点の子音連続**: with this, with the, this Saturday など、同じ調音点の子音が語をまたいで連続する場合、前の子音にリダクションマークが付いているか？ また、それらの語を1グループにまとめてカタカナで連結発音を反映しているか？
 
 ## HTML出力フォーマット
 
@@ -189,11 +234,15 @@ HTML生成前に、以下の項目を1つずつ確認する。過去の実際の
     </div>
     <footer class="footer">
       <div class="legend">
-        <span class="legend-item"><span class="dot-linking">●</span> リンキング</span>
-        <span class="legend-item"><span class="dot-assimilation">●</span> アシミレーション</span>
-        <span class="legend-item"><span class="dot-reduction">●</span> リダクション</span>
-        <span class="legend-item"><span class="dot-flapping">●</span> フラッピング</span>
-        <span class="legend-item"><span class="dot-dark-l">●</span> Dark L</span>
+        <div class="legend-item"><span class="dot-linking">●</span><span class="legend-label">リンキング</span><span class="legend-desc">単語がつながる</span></div>
+        <div class="legend-item"><span class="dot-assimilation">●</span><span class="legend-label">アシミレーション</span><span class="legend-desc">音が混ざって変化</span></div>
+        <div class="legend-item"><span class="dot-reduction">●</span><span class="legend-label">リダクション・Hドロッピング</span><span class="legend-desc">発音しない・消える</span></div>
+        <div class="legend-item"><span class="dot-flapping">●</span><span class="legend-label">フラッピング</span><span class="legend-desc">t/d がラ行に変化</span></div>
+        <div class="legend-item"><span class="dot-dark-l">●</span><span class="legend-label">ダークL</span><span class="legend-desc">L がオ/ウの音に</span></div>
+        <div class="legend-item"><span class="legend-label" style="color:#ddd;">│</span><span class="legend-label">フレーズ区切り</span><span class="legend-desc">息継ぎの位置</span></div>
+      </div>
+      <div class="github-link">
+        <a href="https://github.com/masaqui/eigo-piyo-piyo" target="_blank" rel="noopener">🐣 EigoPiyoPiyo on GitHub</a>
       </div>
     </footer>
   </div>
@@ -236,13 +285,19 @@ rt .accent { font-size: 1.5em; font-weight: 900; color: #222; }
 .char-reduction { color: #339af0; text-decoration: line-through; text-decoration-thickness: 2.5px; }
 .char-assimilation { color: #ff6b6b; }
 .char-flapping { color: #51cf66; }
-.char-dark-l { color: #20c997; }
+.char-dark-l { color: #2b8a3e; }
+.phrase-break { display: inline-block; width: 0; border-left: 2.5px solid #ddd; height: 1.2em; vertical-align: middle; margin: 0 0.3em; }
 .ipa-line { font-family: 'Lucida Grande', 'Arial Unicode MS', 'Gentium Plus', serif; font-size: 0.85rem; color: #bbb; line-height: 1.4; margin-top: 2px; }
 .translation { font-size: 0.95rem; font-weight: 700; color: #555; line-height: 1.5; margin-top: 10px; padding-top: 10px; border-top: 3px solid #eee; }
 .footer { text-align: center; margin-top: 28px; padding: 16px 0; }
-.legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 14px; font-size: 0.8rem; font-weight: 800; color: #555; }
-.legend-item { display: inline-flex; align-items: center; gap: 4px; background: #fff; padding: 4px 10px; border-radius: 20px; border: 2px solid #333; }
-.dot-linking { color: #ff922b; } .dot-assimilation { color: #ff6b6b; } .dot-reduction { color: #339af0; } .dot-flapping { color: #51cf66; } .dot-dark-l { color: #20c997; }
+.legend { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px; max-width: 720px; margin: 0 auto; font-size: 0.78rem; font-weight: 800; color: #555; }
+.legend-item { display: flex; align-items: center; gap: 6px; background: #fff; padding: 6px 12px; border-radius: 12px; border: 2px solid #333; }
+.legend-label { white-space: nowrap; }
+.legend-desc { font-weight: 600; color: #999; font-size: 0.7rem; white-space: nowrap; }
+.dot-linking { color: #ff922b; } .dot-assimilation { color: #ff6b6b; } .dot-reduction { color: #339af0; } .dot-flapping { color: #51cf66; } .dot-dark-l { color: #2b8a3e; }
+.github-link { margin-top: 12px; font-size: 0.75rem; font-weight: 700; }
+.github-link a { color: #888; text-decoration: none; }
+.github-link a:hover { color: #333; text-decoration: underline; }
 @media (max-width: 600px) { .container { padding: 20px 12px; } h1 { font-size: 1.8rem; } .sentence-card { padding: 20px 16px; } .ruby-line { font-size: 1.6rem; line-height: 3.0; } .ipa-line { font-size: 0.75rem; } }
 ```
 
@@ -255,6 +310,7 @@ rt .accent { font-size: 1.5em; font-weight: 900; color: #222; }
     <ruby>To<rt class="rt-weak">トゥ</rt></ruby>
     <ruby>be<rt class="rt-weak">ビ</rt></ruby>
     <ruby><span class="char-reduction">h</span><span class="accent">on</span>es<span class="char-reduction">t</span>,<rt class="rt-stressed"><span class="accent">ア</span>ネス、</rt></ruby>
+    <span class="phrase-break"></span>
     <ruby>I'<span class="char-reduction">d</span><rt class="rt-weak">アイ</rt></ruby>
     <ruby>like<rt class="rt-stressed">ライク</rt></ruby>
     <ruby>a<rt class="rt-weak">ア</rt></ruby>
