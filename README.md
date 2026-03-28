@@ -1,8 +1,9 @@
-# 🐣 EigoPiyoPiyo - 英語のリスニング&シャドーイングに効く! ネイティブ発音可視化ツール
+# 🐣 EigoPiyoPiyo
 
 **英語のリスニング&シャドーイングに効く! ネイティブ発音可視化ツール**
 
 英文を入力すると、ネイティブのアメリカ英語カジュアル発音を解析し、カタカナ読み・IPA発音記号・音声変化を色分けしたHTMLを生成する [Claude](https://claude.ai/) のスキルです。
+リスニングで聞き取れない、シャドーイングがついていけない、そんなときにeigo-piyo-piyoをご活用ください。
 
 <img width="892" height="732" alt="Image" src="https://github.com/user-attachments/assets/110b1dea-c82b-4d37-93c8-ce4f346a31c9" />
 
