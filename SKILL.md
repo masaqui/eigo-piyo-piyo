@@ -98,30 +98,42 @@ description: 英語発音ガイドスキル。英文を入力すると、ネイ�
 
 同じタイプが連続する文字はまとめる。スペースは `normal`。
 
-### フレーズ区切り（thought groups）
+### スラッシュ（slash reading）
 
-文をリズムの塊（thought groups / prosodic phrases）に分割し、区切り位置に視覚的なマーカーを表示する。これにより、英語の自然なリズムとポーズの位置が一目でわかる。
+文を意味のまとまり（チャンク）ごとにスラッシュ `/` で区切り、英語の語順のまま前から理解する「スラッシュリーディング」を視覚的に支援する。区切り位置にスラッシュマーカーを表示することで、英語の自然なリズム・ポーズの位置と、意味の切れ目が一目でわかる。
 
 **判定ルール（優先度順）:**
 
-1. **句読点**: カンマ `,` セミコロン `;` の後は必ず区切る
-2. **接続詞の前**: and, but, or, so, because などの等位接続詞の前で区切る
+1. **句読点の後**: カンマ `,` セミコロン `;` コロン `:` の後は必ず区切る
+2. **接続詞の前**: and, but, or, so, because, although, when, if, while, since, after, before, that（従属接続詞）などの前で区切る
    - ただし短い列挙（"A and B" の2項目のみ）では区切らなくてもよい
    - 3項目以上の列挙（"A and B and C"）は各項目の前で区切る
-3. **動詞句のまとまり**: 主語＋助動詞＋動詞は1フレーズにまとめる（"can I get" → 1塊）
-4. **名詞句のまとまり**: 修飾語＋名詞は1フレーズにまとめる（"two cheese burgers" → 1塊）
-5. **前置詞句の前**: for, with, in, at, on などの前置詞句の前で区切ることが多い（ただし短い前置詞句は前のフレーズに含めてもよい）
-6. **フィラー・呼びかけの後**: Well, Uh, You know, I mean, Let's see などの後で区切る
+3. **主語と動詞の間**（主語が長い場合）: 主語句が長い場合、動詞の前で区切る。ただし "I think" や "You can" のように主語が短い場合は区切らない
+4. **動詞と目的語/補語の間**（目的語/補語が長い場合）: 動詞句の後に長い目的語や補語が続く場合、その前で区切る。"like coffee" のように短い場合は区切らない
+5. **前置詞句の前**: for, with, in, at, on, to, from, by, about, of などの前置詞句の前で区切る（ただし2〜3語の短い前置詞句は前のチャンクに含めてもよい）
+6. **関係代名詞・関係副詞の前**: who, which, that（関係代名詞）, where, when（関係副詞）の前で区切る
+7. **準動詞（to不定詞・動名詞・分詞）の前**: to + 動詞原形、-ing形、過去分詞が新しい意味のまとまりを始める場合に区切る
+8. **フィラー・呼びかけの後**: Well, Uh, You know, I mean, Let's see, Excuse me などの後で区切る
+
+**チャンクの粒度ガイドライン:**
+- 1チャンクは**2〜7語**が目安。1語だけのチャンクは避ける（フィラー・呼びかけを除く）
+- 動詞句のまとまり（主語＋助動詞＋動詞）は1チャンクにまとめる（"can I get" → 1塊）
+- 名詞句のまとまり（修飾語＋名詞）は1チャンクにまとめる（"two cheese burgers" → 1塊）
+- 短い前置詞句（"for me", "at home"）は前後のチャンクに含めてよい
 
 **例:**
 - "Well, can I get two cheese burgers and one french fries and an iced tea, please."
-  → Well, / can I get / two cheese burgers / and one french fries / and an iced tea, please.
+  → Well, / can I get / two cheese burgers / and one french fries / and an iced tea, / please.
 - "Please wait for your meal with this number card."
   → Please wait / for your meal / with this number card.
+- "The man who lives next door is a teacher."
+  → The man / who lives next door / is a teacher.
+- "I want to go to the park to play soccer."
+  → I want to go / to the park / to play soccer.
 
-⚠️ フレーズ区切りは厳密な正解があるものではなく、話速や話者によって変わる。自然に聞こえるまとまりを意識して判定する。迷ったら区切りを入れる（区切りすぎるより、区切らなさすぎる方が読みにくい）。
+⚠️ スラッシュの位置は厳密な正解があるものではなく、読み手のレベルや文の複雑さによって変わる。意味のまとまりを意識して判定する。迷ったら区切りを入れる（区切りすぎるより、区切らなさすぎる方が読みにくい）。
 
-**HTML表現**: フレーズの区切り位置に `<span class="phrase-break"></span>` を挿入する。rubyグループの**間**に置く。
+**HTML表現**: スラッシュの区切り位置に `<span class="slash"></span>` を挿入する。rubyグループの**間**に置く。
 
 ### stress値
 
@@ -224,6 +236,9 @@ HTML生成前に、以下の項目を1つずつ確認する。過去の実際の
   <div class="container">
     <h1>🐣 EigoPiyoPiyo</h1>
     <p class="subtitle">英語発音ガイド</p>
+    <div class="toggle-bar">
+      <button id="kana-toggle" class="toggle-btn" onclick="toggleKana()">🐣 カタカナ ON</button>
+    </div>
     <!-- 各文のカード。入力の1行=1カード。1行に複数文がある場合は文ごとにruby-line+ipa-lineを分ける -->
     <div class="sentence-card">
       <div class="ruby-line">
@@ -239,13 +254,27 @@ HTML生成前に、以下の項目を1つずつ確認する。過去の実際の
         <div class="legend-item"><span class="dot-reduction">●</span><span class="legend-label">リダクション・Hドロッピング</span><span class="legend-desc">発音しない・消える</span></div>
         <div class="legend-item"><span class="dot-flapping">●</span><span class="legend-label">フラッピング</span><span class="legend-desc">t/d がラ行に変化</span></div>
         <div class="legend-item"><span class="dot-dark-l">●</span><span class="legend-label">ダークL</span><span class="legend-desc">L がオ/ウの音に</span></div>
-        <div class="legend-item"><span class="legend-label" style="color:#ddd;">│</span><span class="legend-label">フレーズ区切り</span><span class="legend-desc">息継ぎの位置</span></div>
+        <div class="legend-item"><span class="legend-slash">/</span><span class="legend-label">スラッシュ</span><span class="legend-desc">意味の区切り・息継ぎ</span></div>
       </div>
       <div class="github-link">
         <a href="https://github.com/masaqui/eigo-piyo-piyo" target="_blank" rel="noopener">🐣 EigoPiyoPiyo on GitHub</a>
       </div>
     </footer>
   </div>
+  <script>
+  function toggleKana() {
+    const container = document.querySelector('.container');
+    const btn = document.getElementById('kana-toggle');
+    container.classList.toggle('hide-kana');
+    if (container.classList.contains('hide-kana')) {
+      btn.textContent = '🙈 カタカナ OFF';
+      btn.classList.add('off');
+    } else {
+      btn.textContent = '🐣 カタカナ ON';
+      btn.classList.remove('off');
+    }
+  }
+  </script>
 </body>
 </html>
 ```
@@ -286,7 +315,8 @@ rt .accent { font-size: 1.5em; font-weight: 900; color: #222; }
 .char-assimilation { color: #ff6b6b; }
 .char-flapping { color: #51cf66; }
 .char-dark-l { color: #2b8a3e; }
-.phrase-break { display: inline-block; width: 0; border-left: 2.5px solid #ddd; height: 1.2em; vertical-align: middle; margin: 0 0.3em; }
+.slash { display: inline-block; width: 1em; text-align: center; vertical-align: middle; margin: 0 0.1em; color: #ccc; font-size: 0.8em; font-weight: 900; }
+.slash::before { content: "/"; }
 .ipa-line { font-family: 'Lucida Grande', 'Arial Unicode MS', 'Gentium Plus', serif; font-size: 0.85rem; color: #bbb; line-height: 1.4; margin-top: 2px; }
 .translation { font-size: 0.95rem; font-weight: 700; color: #555; line-height: 1.5; margin-top: 10px; padding-top: 10px; border-top: 3px solid #eee; }
 .footer { text-align: center; margin-top: 28px; padding: 16px 0; }
@@ -294,10 +324,16 @@ rt .accent { font-size: 1.5em; font-weight: 900; color: #222; }
 .legend-item { display: flex; align-items: center; gap: 6px; background: #fff; padding: 6px 12px; border-radius: 12px; border: 2px solid #333; }
 .legend-label { white-space: nowrap; }
 .legend-desc { font-weight: 600; color: #999; font-size: 0.7rem; white-space: nowrap; }
-.dot-linking { color: #ff922b; } .dot-assimilation { color: #ff6b6b; } .dot-reduction { color: #339af0; } .dot-flapping { color: #51cf66; } .dot-dark-l { color: #2b8a3e; }
+.dot-linking { color: #ff922b; } .dot-assimilation { color: #ff6b6b; } .dot-reduction { color: #339af0; } .dot-flapping { color: #51cf66; } .dot-dark-l { color: #2b8a3e; } .legend-slash { color: #ccc; font-weight: 900; font-size: 1.1em; }
 .github-link { margin-top: 12px; font-size: 0.75rem; font-weight: 700; }
 .github-link a { color: #888; text-decoration: none; }
 .github-link a:hover { color: #333; text-decoration: underline; }
+.toggle-bar { text-align: center; margin-bottom: 20px; position: sticky; top: 12px; z-index: 100; }
+.toggle-btn { font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 0.95rem; font-weight: 900; color: #333; background: #fff; border: 3px solid #333; border-bottom-width: 5px; border-radius: 14px; padding: 8px 24px; cursor: pointer; transition: all 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.toggle-btn:hover { background: #fffbe6; }
+.toggle-btn:active { border-bottom-width: 3px; transform: translateY(2px); }
+.toggle-btn.off { background: #f1f3f5; color: #888; border-color: #aaa; }
+.hide-kana rt { opacity: 0; pointer-events: none; }
 @media (max-width: 600px) { .container { padding: 20px 12px; } h1 { font-size: 1.8rem; } .sentence-card { padding: 20px 16px; } .ruby-line { font-size: 1.6rem; line-height: 3.0; } .ipa-line { font-size: 0.75rem; } }
 ```
 
@@ -310,7 +346,7 @@ rt .accent { font-size: 1.5em; font-weight: 900; color: #222; }
     <ruby>To<rt class="rt-weak">トゥ</rt></ruby>
     <ruby>be<rt class="rt-weak">ビ</rt></ruby>
     <ruby><span class="char-reduction">h</span><span class="accent">on</span>es<span class="char-reduction">t</span>,<rt class="rt-stressed"><span class="accent">ア</span>ネス、</rt></ruby>
-    <span class="phrase-break"></span>
+    <span class="slash"></span>
     <ruby>I'<span class="char-reduction">d</span><rt class="rt-weak">アイ</rt></ruby>
     <ruby>like<rt class="rt-stressed">ライク</rt></ruby>
     <ruby>a<rt class="rt-weak">ア</rt></ruby>
