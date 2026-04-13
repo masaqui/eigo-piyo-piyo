@@ -283,6 +283,24 @@ HTML生成前に、以下の項目を1つずつ確認する。過去の実際の
 
 各グループを1つの `<ruby>` にする: `<ruby>英語テキスト<rt class="rt-XXX">カタカナ</rt></ruby>`
 
+**⚠️ 重要: ruby要素間のスペース**
+隣接する `<ruby>` 要素の間には必ず半角スペース ` ` を入れること。スペースがないと単語がくっついて表示される（例: `my name` → `myname`）。
+- ✅ 正しい: `<ruby>my<rt>マイ</rt></ruby> <ruby>name<rt>ネイム</rt></ruby>`
+- ❌ 誤り: `<ruby>my<rt>マイ</rt></ruby><ruby>name<rt>ネイム</rt></ruby>`
+
+HTMLを**プログラムで生成**する場合（Pythonなど）は、ruby要素を結合するときに必ずスペースを挟む:
+```python
+# ✅ 正しい
+" ".join([r("my","マイ"), r("name","ネイム")])
+# または
+r("my","マイ") + " " + r("name","ネイム")
+
+# ❌ 誤り（スペースなし結合）
+r("my","マイ") + r("name","ネイム")
+```
+
+スラッシュ `<span class="slash"></span>` の前後のスペースも同様に必要。
+
 英語テキスト内の音声現象span:
 - `normal`: そのまま, `linking`: `<span class="char-linking">`, `reduction`: `<span class="char-reduction">`, `assimilation`: `<span class="char-assimilation">`, `flapping`: `<span class="char-flapping">`, `dark_l`: `<span class="char-dark-l">`
 
