@@ -18,6 +18,24 @@ IPAは英文の下に小さく1行で表示。単一の自己完結型HTMLファ
 <ruby>my<rt>マイ</rt></ruby><ruby>name<rt>ネイム</rt></ruby>
 ```
 
+### ⚠️ リンキング・アシミレーションで2語以上が1グループになる場合（重複ミス多発）
+
+**音がつながる2語以上は、英単語が複数あっても `<ruby>` を1つにまとめ、rtのカタカナも1文字列にする。**
+英単語側はリンクする2語をまとめて1つの `<ruby>` に入れ、語の間に半角スペースを残せばよい（スペルの見た目はそのまま）。
+**rt（カタカナ）側には絶対にスペースを入れない。** ruby要素自体を分けてしまうと、ブラウザがruby間に余白を入れてしまい、カタカナに不要なスペースが出る。
+
+```html
+<!-- ❌ 誤り：2つのrubyに分けている → rt間に空白が入ってしまう -->
+<ruby>youngest<rt>ヤンゲスツォ</rt></ruby> <ruby>of<rt>ヴ</rt></ruby>
+<ruby>at<rt>アッ</rt></ruby> <ruby>a<rt>ア</rt></ruby>
+
+<!-- ✅ 正しい：1つのrubyにまとめる → rt側もスペースなしで連結 -->
+<ruby><span class="char-linking">youngest of</span><rt class="rt-stressed"><span class="char-linking">ヤンゲスツォヴ</span></rt></ruby>
+<ruby><span class="char-linking">at a</span><rt class="rt-weak"><span class="char-linking">アッア</span></rt></ruby>
+```
+
+この方式は `have a`（ハヴァ）、`in a`（イナ）、`them up`（ゼマップ）、`you an`（ユアン）、`make it`（メイキット）など、すべての複数語リンキング・アシミレーショングループに適用する。
+
 ### 音声現象のspan（英語テキスト内）
 
 | 現象 | span class |
